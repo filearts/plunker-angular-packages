@@ -1,0 +1,30 @@
+{
+  "name": "plunker-angular-packages",
+  "version": "1.0.0",
+  "description": "",
+  "main": "packages.angular.js",
+  "dependencies": {
+    "bluebird": "^2.6.2",
+    "boom": "^2.6.1",
+    "cornet": "^0.1.5",
+    "htmlparser2": "^3.8.2",
+    "lodash": "^2.4.1",
+    "mongo-gyro": "^0.1.22",
+    "request": "^2.51.0",
+    "semver": "^4.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/filearts/plunker-angular-packages.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/filearts/plunker-angular-packages/issues"
+  },
+  "homepage": "https://github.com/filearts/plunker-angular-packages"
+}

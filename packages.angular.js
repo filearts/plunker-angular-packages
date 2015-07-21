@@ -10,7 +10,7 @@ var _ = require("lodash");
 
 Promise.promisifyAll(Fs);
 
-var mongo = new Mongo("mongodb://localhost:27017/plunker");
+var mongo = new Mongo("mongodb://10.240.221.208,10.240.52.23/plunker");
   
 function buildAngularPackageList () {
   
@@ -19,6 +19,7 @@ function buildAngularPackageList () {
   
   var libs = [
     "angular-animate",
+    "angular-aria",
     "angular-cookies",
     "angular-loader",
     "angular-messages",
@@ -100,15 +101,22 @@ function buildAngularPackageList () {
 }
 
 function savePackageList (packages) {
-  return Fs.writeFileAsync("angular.packages.json", JSON.stringify(packages, null, 2), "utf8");
+  return Fs.writeFileAsync("angular.packages.json", JSON.stringify(packages, null, 2), "utf8")
+    .return(packages);
 }
 
 function updatePackageManager (packages) {
+
   return Promise.map(_.values(packages), function (pkgDef) {
-    //console.log({name: pkgDef.name}, {versions: pkgDef.versions});
+    console.log(pkgDef.name, pkgDef.versions);
     //return pkgDef;
-    return mongo.update("packages", {name: pkgDef.name}, {$set: {versions: pkgDef.versions}})
-      .return(pkgDef);
+    return mongo.findAndModify("packages", {name: pkgDef.name}, {$set: {versions: pkgDef.versions}}, {new: true})
+      .then(function (result) {
+        console.log("mongo result", result);
+      })
+      .return(pkgDef, function (err) {
+        console.log("ERR",err);
+      });
   });
 }
 
@@ -121,12 +129,16 @@ function readCachedPackageList () {
 
 
 buildAngularPackageList()
-  .then(savePackageList, readCachedPackageList)
+  .then(savePackageList)
   .then(updatePackageManager)
   .then(function (packages) {
     console.log("Packages saved", packages.length);
   }, function (err) {
     console.log("ERROR", err);
   })
-  .delay(1000 * 60 * 60)
+.then(function() {
+//return mongo.find("plunks",{}).then(function(results){
+//console.log("Results", results);
+//})
+})
   .finally(process.exit.bind(process, 0));
